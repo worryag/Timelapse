@@ -4,7 +4,6 @@
 
 import re
 from ..Script import Script
-from UM.Logger import Logger
 
 class Timelapse(Script):
     def __init__(self):
@@ -48,17 +47,15 @@ class Timelapse(Script):
         parkX = self.getSettingValueByKey("head_park_x")
         parkY = self.getSettingValueByKey("head_park_y")
         PauseTimeLapse = self.getSettingValueByKey("pause_timelapse")
+        
         prepend_gcode=";Start script: Timelapse.py\n"
         prepend_gcode+="G0 Y%.1f F9000\n"%(parkY)
         prepend_gcode+="G0 X%.1f F9000\n"%(parkX)
         prepend_gcode+="G4 S%.1f \n"%(PauseTimeLapse)
         prepend_gcode+=";End script: Timelapse.py\n"
-        #pattern = re.compile(r';MESH:.*STL')
+        
+        pattern = re.compile(r';MESH:.*STL')
         for layer_number, layer in enumerate(data):
-            #if re.search(pattern,layer):
-            #    Logger.log("e", "find")
-            #else:
-            #    Logger.log("e", "Not find")
-            data[layer_number]=re.sub(r';MESH:.*STL',prepend_gcode,layer,flags=re.IGNORECASE)
+            data[layer_number]=re.sub(pattern,prepend_gcode,layer,flags=re.IGNORECASE)
             
         return data
